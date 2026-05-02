@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>geno-camp — Find & Book Campsites</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <div class="logo">
+        <span class="logo-icon">🏕️</span>
+        <h1>geno-camp</h1>
+        <span class="tagline">Washington State · Summer 2026</span>
+      </div>
+      <button class="cart-btn" id="cartBtn" onclick="toggleCart()">
+        <span class="cart-icon">🛒</span>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="filters-bar">
+    <div class="filters-content">
+      <div class="filter-group">
+        <label for="regionFilter">Region</label>
+        <select id="regionFilter" onchange="loadCampsites()">
+          <option value="all">All Regions</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="showerFilter">Showers</label>
+        <select id="showerFilter" onchange="loadCampsites()">
+          <option value="all">Any</option>
+          <option value="free">Free</option>
+          <option value="coin-op">Coin-op</option>
+          <option value="token">Token</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="siteFilter">Site Type</label>
+        <select id="siteFilter" onchange="loadCampsites()">
+          <option value="all">Any</option>
+          <option value="tent">Tent</option>
+          <option value="RV">RV</option>
+          <option value="cabin">Cabin</option>
+          <option value="lodging">Lodging</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="sortFilter">Sort by</label>
+        <select id="sortFilter" onchange="loadCampsites()">
+          <option value="rating">Rating</option>
+          <option value="price">Price</option>
+          <option value="reviews">Most Reviewed</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <div class="campsite-grid" id="campsiteGrid"></div>
+  </main>
+
+  <!-- Cart Sidebar -->
+  <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+  <aside class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+      <h2>Your Trip Cart</h2>
+      <button class="close-btn" onclick="toggleCart()">&times;</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <p class="empty-cart">No campsites added yet.<br>Browse and click "Add to Trip" to get started.</p>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-total">
+        <span>Estimated Total</span>
+        <span id="cartTotal">$0</span>
+      </div>
+      <button class="checkout-btn" onclick="checkout()">Book All Sites →</button>
+      <p class="checkout-note">Opens booking instructions for each site</p>
+    </div>
+  </aside>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+  <div class="modal" id="detailModal">
+    <button class="close-btn modal-close" onclick="closeModal()">&times;</button>
+    <div id="modalContent"></div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div class="modal-overlay" id="checkoutOverlay" onclick="closeCheckout()"></div>
+  <div class="modal checkout-modal" id="checkoutModal">
+    <button class="close-btn modal-close" onclick="closeCheckout()">&times;</button>
+    <div id="checkoutContent"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
