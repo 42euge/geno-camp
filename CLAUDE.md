@@ -5,7 +5,8 @@ Campsite discovery and booking assistant for Claude Code.
 ## Structure
 
 ```
-skills/geno-camp/SKILL.md   — main skill: search, compare, book campsites
+skills/geno-camp/SKILL.md              — main skill: search, compare, book campsites
+skills/geno-camp/regions/washington.md  — WA region profile: parks, showers, booking details
 ```
 
 ## Data Paths
@@ -16,10 +17,12 @@ skills/geno-camp/SKILL.md   — main skill: search, compare, book campsites
 
 ## Key Design Decisions
 
-- **Amenity-aware routing**: showers/hookups → state parks + private sites first; NPS campgrounds deprioritized since most lack showers
-- **State-specific booking systems**: WA uses GoingToCamp, CA uses ReserveCalifornia, federal uses recreation.gov
-- **Multi-platform search**: Hipcamp, The Dyrt, KOA, Campnab — not just recreation.gov
-- **Verified amenities**: always fetch the actual campground page to confirm amenities exist, don't trust listing titles alone
+- **Region profiles**: pre-researched state knowledge files loaded before searching — avoids dead-end queries
+- **Amenity-aware routing**: showers/hookups → state parks + private first; NPS deprioritized (no showers)
+- **State-specific booking systems**: WA GoingToCamp, CA ReserveCalifornia, federal recreation.gov
+- **Multi-platform search**: Hipcamp, The Dyrt, KOA, Campnab, camply
+- **Verified amenities**: fetch actual campground pages to confirm, don't trust listing titles
+- **Compare subcommand**: side-by-side table with winner highlighting
 - All dates in YYYY-MM-DD format
 
 ## Conventions
@@ -27,3 +30,4 @@ skills/geno-camp/SKILL.md   — main skill: search, compare, book campsites
 - Follows geno ecosystem skill conventions (SKILL.md with frontmatter, package.json skill map)
 - Uses WebSearch + WebFetch for discovery, AskUserQuestion for user interaction
 - Optional geno-vla integration for browser-based booking automation
+- Region profiles are additive — new states can be added without changing the skill

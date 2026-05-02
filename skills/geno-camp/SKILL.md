@@ -8,7 +8,7 @@ argument-hint: "[location, dates, or preferences — e.g. 'WA this summer with s
 license: MIT
 metadata:
   author: 42euge
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # Campsite Discovery & Booking
@@ -17,13 +17,26 @@ Find, compare, and book campsites. Handles the full flow from search to reservat
 
 ## Input
 
-`{{ args }}` is freeform text describing what the user wants — location, dates, group size, amenities, or a subcommand (`trips`, `saved`, `watch`).
+`{{ args }}` is freeform text describing what the user wants — location, dates, group size, amenities, or a subcommand (`trips`, `saved`, `watch`, `compare`).
 
 ## Tools Required
 
 - **WebSearch** — find campsite availability across multiple platforms
 - **WebFetch** — pull detailed campsite info, pricing, availability from specific URLs
 - **AskUserQuestion** — confirm preferences, present options, get booking decisions
+- **Read** — load region profiles from `regions/` directory for state-specific knowledge
+
+## Region Profiles
+
+Region profiles live in `regions/{state}.md` alongside this skill. They contain:
+- State-specific booking systems and advance windows
+- Regions within the state with vibes, best-for tags, and top picks
+- Verified shower details (type, cost, hours, seasonal availability)
+- Seasonal notes (fire restrictions, mosquitoes, passes required)
+
+**When searching a specific state, always load its region profile first** (if one exists). This avoids dead-end searches and provides verified, pre-researched recommendations that can be presented immediately while web searches run for availability.
+
+Currently available: `regions/washington.md`
 
 ## Workflow
 
@@ -211,6 +224,41 @@ last_checked: null
 ```
 
 Suggest the user set up a `/schedule` routine to check availability periodically, or use Campnab (campnab.com) for automated alerts.
+
+## Subcommand: compare
+
+Side-by-side comparison of 2-4 campgrounds. Input: campground names or saved bookmark IDs.
+
+1. Load details for each (from saved data or web search).
+2. Present as a comparison table:
+
+```
+| | Deception Pass | Pearrygin Lake | Shangri La Push |
+|---|---|---|---|
+| Region | San Juans | North Cascades | Olympic Peninsula |
+| Price/night | $35 | $38 | $45 |
+| Showers | Coin-op ($1/12min) | Free (temp varies) | Free hot |
+| Sites | 326 | 147 | 15 |
+| Rating | 4.5★ (109) | 4.5★ (29) | 98% (2124) |
+| Book via | GoingToCamp | GoingToCamp | Hipcamp |
+| Vibe | Scenic bridge, busy | Mountain lake, quiet | Rainforest, intimate |
+| Drive from Seattle | 1.5 hr | 4 hr | 4.5 hr |
+```
+
+3. Highlight the winner in each category. Give a 1-sentence recommendation based on user preferences.
+
+---
+
+## Data Sources & APIs
+
+For programmatic access (future automation):
+
+- **Recreation.gov RIDB API** — ridb.recreation.gov — federal campground data, real-time availability
+- **Camply** (open source) — github.com/juftin/camply — Python lib for checking recreation.gov + state parks availability
+- **Campflare** — campflare.com/api — campground search API
+- **Schema.org CampingPitch** — standard schema for campsite attributes (amenity features, occupancy, pricing)
+
+When the user wants automated availability checking, suggest installing camply: `pip install camply` — it can scan recreation.gov and GoingToCamp for open sites and send notifications.
 
 ---
 
