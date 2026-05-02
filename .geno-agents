@@ -1,0 +1,6 @@
+role: geno-camp
+description: Campsite discovery and booking assistant — find, compare, and reserve campsites
+capabilities:
+  - campsite-search
+  - booking
+  - trip-planning
