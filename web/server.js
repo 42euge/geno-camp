@@ -101,7 +101,7 @@ app.post("/api/checkout", (req, res) => {
 });
 
 function getBookingInstructions(site) {
-  if (site.platform === "GoingToCamp") {
+  if (site.platform === "WA State Parks") {
     return [
       "Go to washington.goingtocamp.com",
       `Search for "${site.name}"`,
@@ -122,6 +122,18 @@ function getBookingInstructions(site) {
       "Enter vehicle count and camping setup",
       "Pay with credit card (10-15% service fee on top)",
       "Note: Some hosts use Request-to-Book — wait up to 24h for confirmation",
+    ];
+  }
+  if (site.platform === "Recreation.gov") {
+    return [
+      `Go to ${site.bookingUrl}`,
+      "Click 'Check Availability'",
+      "Select your dates on the calendar (green = available)",
+      "Pick a specific site from the map view",
+      "Click 'Book Now' → sign in or create an account",
+      "Fill in details and pay ($6 non-refundable reservation fee)",
+      "⚡ 15-minute checkout timer — have payment info ready",
+      "Tip: New dates release on the 15th of each month at 10am ET",
     ];
   }
   return ["Visit the booking URL and follow the platform instructions"];

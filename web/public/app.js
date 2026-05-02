@@ -43,7 +43,7 @@ function renderPlatformTags() {
 }
 
 function getPlatformIcon(platform) {
-  const icons = { GoingToCamp: "🏛️", Hipcamp: "⛺" };
+  const icons = { "WA State Parks": "🏛️", Hipcamp: "⛺", "Recreation.gov": "🏔️" };
   return icons[platform] || "📍";
 }
 
@@ -106,7 +106,7 @@ function renderGrid(sites) {
 }
 
 function showerLabel(type) {
-  return { free: "Free", "coin-op": "Coin-op", token: "Token", available: "Available" }[type] || type;
+  return { free: "Free", "coin-op": "Coin-op", token: "Token", available: "Available", none: "None", "hot-springs": "Hot Springs" }[type] || type;
 }
 
 function isInCart(id) {
@@ -154,7 +154,7 @@ function updateMap(sites) {
   sites.forEach((site) => {
     if (!site.lat || !site.lng) return;
 
-    const color = site.platform === "Hipcamp" ? "#e8642c" : "#2d5a3d";
+    const color = { Hipcamp: "#e8642c", "WA State Parks": "#2d5a3d", "Recreation.gov": "#3a7ca5" }[site.platform] || "#6b6b6b";
     const marker = L.circleMarker([site.lat, site.lng], {
       radius: 10,
       fillColor: color,
