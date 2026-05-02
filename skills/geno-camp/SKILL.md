@@ -8,7 +8,7 @@ argument-hint: "[location, dates, or preferences — e.g. 'WA this summer with s
 license: MIT
 metadata:
   author: 42euge
-  version: "0.3.0"
+  version: "0.4.0"
 ---
 
 # Campsite Discovery & Booking
@@ -134,20 +134,73 @@ Include 4-6 options, ordered by best match to the user's stated preferences. Aft
 
 ### 6. Booking
 
-Once the user picks a site:
+Once the user picks a site, provide the platform-specific booking guide:
 
-1. Provide the **direct booking URL** for the specific campground and dates.
-2. Summarize the booking process:
-   - Account requirements (recreation.gov login, GoingToCamp account, etc.)
-   - Payment method and expected total (per-night × nights + reservation fee + taxes)
-   - Cancellation policy and deadline
-   - Check-in/check-out times
-3. **Browser automation** (if `geno-vla` MCP server is available):
-   - Offer to navigate to the booking page, fill in dates and group size
-   - Pause at payment step for user to complete
-4. **Manual instructions** (if no browser automation):
-   - Step-by-step with specific button names and form fields
-   - Note any gotchas (e.g., recreation.gov times out after 15 min)
+#### 6a. Washington State Parks (GoingToCamp)
+
+**URL:** `https://washington.goingtocamp.com/create-booking/results?resourceLocationId={park_id}`
+
+**What you need ready:**
+- Credit card
+- Arrival/departure dates + backup choices
+- RV/trailer length if applicable
+- Number of campers and tents
+- Primary camper name, address, phone, email
+
+**Steps:**
+1. Go to washington.goingtocamp.com → "Create Booking"
+2. Search by park name or map → select park
+3. Enter dates and equipment type → view available sites
+4. Select a specific site (use map view to pick by location)
+5. Review site details (hookups, size, shade, proximity to showers)
+6. Add to cart → fill in camper details
+7. Pay with credit card ($8 online reservation fee added)
+
+**Gotchas:**
+- Session times out — don't take too long browsing
+- Same-day bookings available until 2pm (tent/RV only, not cabins)
+- Split reservations (2 sites) require calling (888) 226-7688
+- Minimum 2-night stay for roofed accommodations May 15 – Sep 15
+
+**Cancellation:** Refund minus service fee if cancelled 48+ hours before arrival.
+
+#### 6b. Recreation.gov (Federal)
+
+**Steps:**
+1. Go to recreation.gov → search campground name
+2. Select campground → "Check Availability"
+3. Calendar view shows available dates in green
+4. Select site → "Book Now"
+5. Sign in or create account → fill in details → pay
+
+**Gotchas:**
+- $6 non-refundable reservation fee
+- 15-minute checkout timer — have payment ready
+- Some sites show "Not Yet Released" — check the 15th of month at 10am ET
+
+#### 6c. Hipcamp (Private)
+
+**Steps:**
+1. Go to listing page → select dates → "Reserve"
+2. Rulebook: read property rules and policies → "Agree and Continue"
+3. Extras: add firewood bundles, kayak rental, etc. (optional) → "Continue"
+4. Vehicles: enter number of vehicles and camping setup (tent size, etc.)
+5. Payment: credit card + review total (service fee included)
+6. Some hosts use "Request to Book" (not instant) — wait for approval within 24h
+
+**Gotchas:**
+- Service fee is 10-15% on top of listed price
+- "Request to Book" sites may not confirm — have a backup
+- Cancellation policy varies by host (check before booking)
+
+#### 6d. Browser automation (geno-vla)
+
+If the `geno-vla` MCP server is available:
+1. Offer to open the booking URL in browser
+2. Navigate to the availability page and fill in dates + group size
+3. Let the user review the site selection
+4. **Pause at the payment step** — never auto-submit payment
+5. After user confirms booking, offer to save trip details
 
 ### 7. Save trip details
 
@@ -258,7 +311,13 @@ For programmatic access (future automation):
 - **Campflare** — campflare.com/api — campground search API
 - **Schema.org CampingPitch** — standard schema for campsite attributes (amenity features, occupancy, pricing)
 
-When the user wants automated availability checking, suggest installing camply: `pip install camply` — it can scan recreation.gov and GoingToCamp for open sites and send notifications.
+When the user wants automated availability checking:
+
+- **camply** (`pip install camply`) — scans recreation.gov and GoingToCamp for open sites, sends email/Slack/Pushover notifications when sites open up. Best for federal + WA state parks.
+- **gocamp** (github.com/peckjon/gocamp) — Python wrapper specifically for WA GoingToCamp API. Can run complex queries like "all available weekends in July at Deception Pass." Read-only (no booking), but can deep-link to the booking page with prefilled search.
+- **Campnab** (campnab.com) — SaaS cancellation scanner. No setup needed, just enter campground + dates. $10-20 per scan window.
+
+For a `/schedule` routine, suggest a camply command that checks availability and sends a push notification when a site opens.
 
 ---
 
