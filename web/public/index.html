@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>geno-camp — Find & Book Campsites</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
   <header>
@@ -14,53 +16,66 @@
         <h1>geno-camp</h1>
         <span class="tagline">Washington State · Summer 2026</span>
       </div>
-      <button class="cart-btn" id="cartBtn" onclick="toggleCart()">
-        <span class="cart-icon">🛒</span>
-        <span class="cart-count" id="cartCount">0</span>
-      </button>
+      <div class="header-actions">
+        <button class="view-toggle" id="viewToggle" onclick="toggleView()">
+          <span id="viewIcon">🗺️</span> <span id="viewLabel">Map</span>
+        </button>
+        <button class="cart-btn" id="cartBtn" onclick="toggleCart()">
+          <span class="cart-icon">🛒</span>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+      </div>
     </div>
   </header>
 
   <div class="filters-bar">
     <div class="filters-content">
-      <div class="filter-group">
-        <label for="regionFilter">Region</label>
-        <select id="regionFilter" onchange="loadCampsites()">
-          <option value="all">All Regions</option>
-        </select>
+      <div class="filter-row">
+        <div class="filter-group">
+          <label for="regionFilter">Region</label>
+          <select id="regionFilter" onchange="loadCampsites()">
+            <option value="all">All Regions</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="showerFilter">Showers</label>
+          <select id="showerFilter" onchange="loadCampsites()">
+            <option value="all">Any</option>
+            <option value="free">Free</option>
+            <option value="coin-op">Coin-op</option>
+            <option value="token">Token</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="siteFilter">Site Type</label>
+          <select id="siteFilter" onchange="loadCampsites()">
+            <option value="all">Any</option>
+            <option value="tent">Tent</option>
+            <option value="RV">RV</option>
+            <option value="cabin">Cabin</option>
+            <option value="lodging">Lodging</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="sortFilter">Sort by</label>
+          <select id="sortFilter" onchange="loadCampsites()">
+            <option value="rating">Rating</option>
+            <option value="price">Price</option>
+            <option value="reviews">Most Reviewed</option>
+          </select>
+        </div>
       </div>
-      <div class="filter-group">
-        <label for="showerFilter">Showers</label>
-        <select id="showerFilter" onchange="loadCampsites()">
-          <option value="all">Any</option>
-          <option value="free">Free</option>
-          <option value="coin-op">Coin-op</option>
-          <option value="token">Token</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label for="siteFilter">Site Type</label>
-        <select id="siteFilter" onchange="loadCampsites()">
-          <option value="all">Any</option>
-          <option value="tent">Tent</option>
-          <option value="RV">RV</option>
-          <option value="cabin">Cabin</option>
-          <option value="lodging">Lodging</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label for="sortFilter">Sort by</label>
-        <select id="sortFilter" onchange="loadCampsites()">
-          <option value="rating">Rating</option>
-          <option value="price">Price</option>
-          <option value="reviews">Most Reviewed</option>
-        </select>
-      </div>
+      <div class="platform-tags" id="platformTags"></div>
     </div>
   </div>
 
   <main>
-    <div class="campsite-grid" id="campsiteGrid"></div>
+    <div class="main-layout" id="mainLayout">
+      <div class="campsite-grid" id="campsiteGrid"></div>
+      <div class="map-pane" id="mapPane" style="display:none">
+        <div id="map"></div>
+      </div>
+    </div>
   </main>
 
   <!-- Cart Sidebar -->
@@ -85,7 +100,7 @@
 
   <!-- Detail Modal -->
   <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
-  <div class="modal" id="detailModal">
+  <div class="modal detail-modal" id="detailModal">
     <button class="close-btn modal-close" onclick="closeModal()">&times;</button>
     <div id="modalContent"></div>
   </div>

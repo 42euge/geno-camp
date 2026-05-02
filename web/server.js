@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.static(join(__dirname, "public")));
 
 app.get("/api/campsites", (_req, res) => {
-  const { region, minPrice, maxPrice, showerType, siteType, sort } = _req.query;
+  const { region, minPrice, maxPrice, showerType, siteType, sort, platforms } = _req.query;
 
   let results = [...campsites];
 
@@ -30,6 +30,12 @@ app.get("/api/campsites", (_req, res) => {
   if (siteType && siteType !== "all") {
     results = results.filter((c) => c.siteTypes.includes(siteType));
   }
+  if (platforms) {
+    const allowed = platforms.split(",").filter(Boolean);
+    if (allowed.length > 0) {
+      results = results.filter((c) => allowed.includes(c.platform));
+    }
+  }
   if (sort === "price") {
     results.sort((a, b) => a.pricePerNight - b.pricePerNight);
   } else if (sort === "rating") {
@@ -47,9 +53,20 @@ app.get("/api/campsites/:id", (req, res) => {
   res.json(site);
 });
 
+app.get("/api/campsites/:id/availability", (req, res) => {
+  const site = campsites.find((c) => c.id === req.params.id);
+  if (!site) return res.status(404).json({ error: "Not found" });
+  res.json(site.availability || {});
+});
+
 app.get("/api/regions", (_req, res) => {
   const regions = [...new Set(campsites.map((c) => c.region))].sort();
   res.json(regions);
+});
+
+app.get("/api/platforms", (_req, res) => {
+  const platforms = [...new Set(campsites.map((c) => c.platform))].sort();
+  res.json(platforms);
 });
 
 app.post("/api/checkout", (req, res) => {
@@ -75,12 +92,7 @@ app.post("/api/checkout", (req, res) => {
       checkout: item.checkout,
       nights,
       guests: item.guests,
-      cost: {
-        perNight: site.pricePerNight,
-        nights,
-        reservationFee: site.reservationFee,
-        total,
-      },
+      cost: { perNight: site.pricePerNight, nights, reservationFee: site.reservationFee, total },
       instructions: getBookingInstructions(site),
     };
   });
