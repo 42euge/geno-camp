@@ -14,6 +14,16 @@ async function init() {
   await loadRegions();
   await loadPlatforms();
   await loadCampsites();
+  handleHash();
+  window.addEventListener("hashchange", handleHash);
+}
+
+function handleHash() {
+  const hash = window.location.hash;
+  if (hash.startsWith("#/campsite/")) {
+    const id = hash.replace("#/campsite/", "");
+    openDetail(id);
+  }
 }
 
 async function loadRegions() {
@@ -285,6 +295,7 @@ function renderAvailabilityCalendar(availability) {
 // --- Detail Modal ---
 
 async function openDetail(id) {
+  history.replaceState(null, "", `#/campsite/${id}`);
   const res = await fetch(`/api/campsites/${id}`);
   const site = await res.json();
 
@@ -303,7 +314,15 @@ async function openDetail(id) {
     <img class="modal-image" src="${site.image}" alt="${site.name}"
          onerror="this.style.background='#2d5a3d';this.style.height='120px'">
     <div class="modal-body">
-      <div class="modal-name">${site.name}</div>
+      <div class="modal-title-row">
+        <div class="modal-name">${site.name}</div>
+        <div class="modal-actions">
+          <button class="share-btn" onclick="shareCampsite('${site.id}', '${site.name.replace(/'/g, "\\'")}')" title="Copy link">
+            <span id="shareIcon-${site.id}">🔗</span>
+          </button>
+          <a class="book-link-btn" href="${site.bookingUrl}" target="_blank" rel="noopener" title="Book on ${site.platform}" onclick="event.stopPropagation()">↗</a>
+        </div>
+      </div>
       <div class="modal-location">${site.location} · ${site.region} · ${getDriveTime(site)}${site.driveFromPortland && site.location.endsWith(", OR") ? ` · ${site.driveFromSeattle} from Seattle` : ""}</div>
 
       <div class="card-meta" style="margin: 16px 0">
@@ -409,6 +428,9 @@ async function loadNearbySites(siteId) {
 function closeModal() {
   document.getElementById("modalOverlay").classList.remove("open");
   document.getElementById("detailModal").classList.remove("open");
+  if (window.location.hash.startsWith("#/campsite/")) {
+    history.replaceState(null, "", window.location.pathname);
+  }
 }
 
 // --- Cart ---
@@ -531,8 +553,12 @@ async function checkout() {
       </div>
     `).join("")}
     <div class="checkout-total"><span>Estimated Trip Total</span><span>$${data.totalCost}</span></div>
+    <div class="checkout-actions">
+      <button class="export-btn" onclick="exportTrip(window._lastBookings)">📅 Export to Calendar (.ics)</button>
+    </div>
   `;
 
+  window._lastBookings = data.bookings;
   toggleCart();
   document.getElementById("checkoutOverlay").classList.add("open");
   document.getElementById("checkoutModal").classList.add("open");
@@ -654,6 +680,48 @@ function toggleFavoritesFilter() {
     label.textContent = "Favorites";
   }
   loadCampsites();
+}
+
+// --- Share ---
+
+function shareCampsite(id, name) {
+  const url = `${window.location.origin}${window.location.pathname}#/campsite/${id}`;
+  navigator.clipboard.writeText(url).then(() => {
+    const icon = document.getElementById(`shareIcon-${id}`);
+    if (icon) {
+      icon.textContent = "✓";
+      setTimeout(() => { icon.textContent = "🔗"; }, 2000);
+    }
+  });
+}
+
+// --- Export Trip (.ics) ---
+
+function exportTrip(bookings) {
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//geno-camp//EN"];
+  bookings.forEach((b) => {
+    if (b.status !== "ready") return;
+    const dtStart = b.checkin.replace(/-/g, "");
+    const dtEnd = b.checkout.replace(/-/g, "");
+    lines.push(
+      "BEGIN:VEVENT",
+      `DTSTART;VALUE=DATE:${dtStart}`,
+      `DTEND;VALUE=DATE:${dtEnd}`,
+      `SUMMARY:Camping: ${b.name}`,
+      `DESCRIPTION:${b.nights} nights · $${b.cost.total} · ${b.platform}\\nBook at: ${b.bookingUrl}`,
+      `LOCATION:${b.name}`,
+      `UID:geno-camp-${b.campsiteId}-${dtStart}@geno-camp`,
+      "END:VEVENT"
+    );
+  });
+  lines.push("END:VCALENDAR");
+
+  const blob = new Blob([lines.join("\r\n")], { type: "text/calendar" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "camping-trip.ics";
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 
 // --- Theme ---

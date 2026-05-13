@@ -498,6 +498,42 @@ main { max-width: 1400px; margin: 24px auto; padding: 0 24px; }
 .filter-meta-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
 .result-count { font-size: 13px; color: var(--stone); font-weight: 500; white-space: nowrap; }
 
+/* Modal title row with share/book buttons */
+.modal-title-row { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+.modal-title-row .modal-name { flex: 1; }
+.modal-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.share-btn, .book-link-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--bark);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+.share-btn:hover, .book-link-btn:hover { background: var(--cream); border-color: var(--pine); }
+
+/* Export button */
+.checkout-actions { text-align: center; padding: 0 24px 24px; }
+.export-btn {
+  padding: 10px 20px;
+  background: var(--lake);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.export-btn:hover { background: #2e6a8e; }
+
 /* Nearby campsites */
 .nearby-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .nearby-card {
