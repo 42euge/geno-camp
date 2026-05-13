@@ -11,10 +11,20 @@ app.use(express.json());
 app.use(express.static(join(__dirname, "public")));
 
 app.get("/api/campsites", (_req, res) => {
-  const { region, minPrice, maxPrice, showerType, siteType, sort, platforms } = _req.query;
+  const { region, minPrice, maxPrice, showerType, siteType, sort, platforms, q, state } = _req.query;
 
   let results = [...campsites];
 
+  if (q) {
+    const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+    results = results.filter((c) => {
+      const haystack = [c.name, c.location, c.region, c.highlights, c.platform, ...c.amenities, ...(c.tips ? [c.tips] : [])].join(" ").toLowerCase();
+      return terms.every((t) => haystack.includes(t));
+    });
+  }
+  if (state && state !== "all") {
+    results = results.filter((c) => c.location.endsWith(`, ${state}`));
+  }
   if (region && region !== "all") {
     results = results.filter((c) => c.region === region);
   }
@@ -42,6 +52,13 @@ app.get("/api/campsites", (_req, res) => {
     results.sort((a, b) => b.rating - a.rating);
   } else if (sort === "reviews") {
     results.sort((a, b) => b.reviews - a.reviews);
+  } else if (sort?.startsWith("distance-")) {
+    const cityKey = sort.replace("distance-", "");
+    const city = CITIES[cityKey];
+    if (city) {
+      results = results.map((c) => ({ ...c, distanceMi: Math.round(haversine(city.lat, city.lng, c.lat, c.lng)) }));
+      results.sort((a, b) => a.distanceMi - b.distanceMi);
+    }
   }
 
   res.json(results);
@@ -60,13 +77,48 @@ app.get("/api/campsites/:id/availability", (req, res) => {
 });
 
 app.get("/api/regions", (_req, res) => {
-  const regions = [...new Set(campsites.map((c) => c.region))].sort();
+  let filtered = campsites;
+  if (_req.query.state && _req.query.state !== "all") {
+    filtered = campsites.filter((c) => c.location.endsWith(`, ${_req.query.state}`));
+  }
+  const regions = [...new Set(filtered.map((c) => c.region))].sort();
   res.json(regions);
 });
 
 app.get("/api/platforms", (_req, res) => {
   const platforms = [...new Set(campsites.map((c) => c.platform))].sort();
   res.json(platforms);
+});
+
+const CITIES = {
+  seattle: { lat: 47.6062, lng: -122.3321 },
+  portland: { lat: 45.5152, lng: -122.6784 },
+  bend: { lat: 44.0582, lng: -121.3153 },
+};
+
+function haversine(lat1, lng1, lat2, lng2) {
+  const R = 3959;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+app.get("/api/campsites/:id/nearby", (req, res) => {
+  const site = campsites.find((c) => c.id === req.params.id);
+  if (!site) return res.status(404).json({ error: "Not found" });
+
+  const nearby = campsites
+    .filter((c) => c.id !== site.id)
+    .map((c) => ({ ...c, distance: Math.round(haversine(site.lat, site.lng, c.lat, c.lng)) }))
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, 4);
+
+  res.json(nearby);
+});
+
+app.get("/api/cities", (_req, res) => {
+  res.json(Object.keys(CITIES));
 });
 
 app.post("/api/checkout", (req, res) => {
@@ -110,6 +162,17 @@ function getBookingInstructions(site) {
       "Add to cart and fill in camper details",
       "Pay with credit card ($8 reservation fee added)",
       "Tip: Have backup dates ready — session times out quickly",
+    ];
+  }
+  if (site.platform === "OR State Parks") {
+    return [
+      "Go to oregonstateparks.reserveamerica.com",
+      `Search for "${site.name}"`,
+      "Select your dates and view available sites",
+      "Pick a specific site from the map view",
+      "Fill in group size and equipment details",
+      "Create account or sign in → pay ($8 reservation fee added)",
+      "Tip: Coastal parks sell out fast for summer weekends — book 9 months ahead",
     ];
   }
   if (site.platform === "Hipcamp") {

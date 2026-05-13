@@ -14,9 +14,15 @@
       <div class="logo">
         <span class="logo-icon">🏕️</span>
         <h1>geno-camp</h1>
-        <span class="tagline">Washington State · Summer 2026</span>
+        <span class="tagline">Pacific Northwest · Summer 2026</span>
       </div>
       <div class="header-actions">
+        <button class="view-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle dark mode">
+          <span id="themeIcon">🌙</span>
+        </button>
+        <button class="view-toggle" id="favToggle" onclick="toggleFavoritesFilter()">
+          <span id="favIcon">♡</span> <span id="favLabel">Favorites</span>
+        </button>
         <button class="view-toggle" id="viewToggle" onclick="toggleView()">
           <span id="viewIcon">🗺️</span> <span id="viewLabel">Map</span>
         </button>
@@ -30,7 +36,25 @@
 
   <div class="filters-bar">
     <div class="filters-content">
+      <div class="search-row">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="Search campsites, locations, amenities..." oninput="loadCampsites()">
+          <kbd class="search-shortcut" id="searchShortcut">/</kbd>
+        </div>
+        <button class="compare-btn" id="compareBtn" onclick="openCompare()" style="display:none">
+          Compare <span id="compareCount">0</span>
+        </button>
+      </div>
       <div class="filter-row">
+        <div class="filter-group">
+          <label for="stateFilter">State</label>
+          <select id="stateFilter" onchange="onStateChange()">
+            <option value="all">All States</option>
+            <option value="WA">Washington</option>
+            <option value="OR">Oregon</option>
+          </select>
+        </div>
         <div class="filter-group">
           <label for="regionFilter">Region</label>
           <select id="regionFilter" onchange="loadCampsites()">
@@ -64,10 +88,24 @@
             <option value="rating">Rating</option>
             <option value="price">Price</option>
             <option value="reviews">Most Reviewed</option>
+            <option value="distance-seattle">Nearest to Seattle</option>
+            <option value="distance-portland">Nearest to Portland</option>
+            <option value="distance-bend">Nearest to Bend</option>
           </select>
         </div>
+        <div class="filter-group price-range-group">
+          <label>Price Range</label>
+          <div class="price-range-inputs">
+            <input type="number" id="minPrice" placeholder="Min" min="0" oninput="loadCampsites()">
+            <span class="price-dash">–</span>
+            <input type="number" id="maxPrice" placeholder="Max" min="0" oninput="loadCampsites()">
+          </div>
+        </div>
       </div>
-      <div class="platform-tags" id="platformTags"></div>
+      <div class="filter-meta-row">
+        <div class="platform-tags" id="platformTags"></div>
+        <div class="result-count" id="resultCount"></div>
+      </div>
     </div>
   </div>
 
@@ -107,12 +145,26 @@
     <div id="modalContent"></div>
   </div>
 
+  <!-- Compare Modal -->
+  <div class="modal-overlay" id="compareOverlay" onclick="closeCompare()"></div>
+  <div class="modal compare-modal" id="compareModal">
+    <button class="close-btn modal-close" onclick="closeCompare()">&times;</button>
+    <div id="compareContent"></div>
+  </div>
+
   <!-- Checkout Modal -->
   <div class="modal-overlay" id="checkoutOverlay" onclick="closeCheckout()"></div>
   <div class="modal checkout-modal" id="checkoutModal">
     <button class="close-btn modal-close" onclick="closeCheckout()">&times;</button>
     <div id="checkoutContent"></div>
   </div>
+
+  <footer>
+    <div class="footer-content">
+      <span>geno-camp · Part of the <a href="https://github.com/42euge/geno-tools" target="_blank" rel="noopener">geno ecosystem</a></span>
+      <span>20 campsites · 2 states · 4 platforms</span>
+    </div>
+  </footer>
 
   <script src="app.js"></script>
 </body>

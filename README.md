@@ -37,6 +37,7 @@ Pre-researched state knowledge files that make searches faster and smarter:
 | State | File | Highlights |
 |---|---|---|
 | Washington | `regions/washington.md` | 7 regions, 30+ campgrounds, verified shower details, GoingToCamp booking |
+| Oregon | `regions/oregon.md` | 6 regions, 25+ campgrounds, coastal parks, Crater Lake, ReserveAmerica booking |
 
 Want to add a state? Create `regions/{state}.md` following the WA template.
 

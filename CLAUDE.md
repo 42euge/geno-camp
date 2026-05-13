@@ -7,6 +7,7 @@ Campsite discovery and booking assistant for Claude Code.
 ```
 skills/geno-camp/SKILL.md              — main skill: search, compare, book campsites
 skills/geno-camp/regions/washington.md  — WA region profile: parks, showers, booking details
+skills/geno-camp/regions/oregon.md     — OR region profile: coast, Bend, Crater Lake, booking details
 ```
 
 ## Data Paths

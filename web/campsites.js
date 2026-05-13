@@ -22,7 +22,7 @@ export const campsites = [
     season: "Year-round (water spring–Thanksgiving)",
     alerts: ["Bowman Bay pier closed indefinitely", "No vehicles over 25ft at West Beach"],
     tips: "Cranberry Loop has the best shade. Sites C-30 to C-50 are closest to showers.",
-    availability: generateAvailability(0.6),
+    availability: generateAvailability(0.6, 1001),
     socialReviews: [
       { source: "Reddit r/WACamping", user: "u/PNW_hiker92", text: "Cranberry Loop is the move. We got site C-38 and the walk to showers was maybe 2 minutes. The bridge views at sunset are unreal.", date: "2025-08" },
       { source: "The Dyrt", user: "CampingMom_WA", text: "Came with three kids and they loved the tidepools at Rosario Beach. Showers were clean but bring tokens — the machine at the booth only takes $1 bills.", date: "2025-07" },
@@ -52,7 +52,7 @@ export const campsites = [
     season: "Year-round",
     alerts: [],
     tips: "Book early — only 15 sites. The outdoor cedar shower in summer is an experience.",
-    availability: generateAvailability(0.3),
+    availability: generateAvailability(0.3, 1002),
     socialReviews: [
       { source: "Reddit r/OlympicNationalPark", user: "u/rainforest_runner", text: "The cedar shower alone is worth the trip. Hot water, surrounded by old growth — felt like a spa. Second Beach is a 5 min drive.", date: "2025-08" },
       { source: "Instagram", user: "@vanlife.pnw", text: "Our favorite spot on the entire Olympic Peninsula. The hosts are incredibly kind and the sites are well-spaced. You feel totally immersed in the rainforest.", date: "2025-07" },
@@ -82,7 +82,7 @@ export const campsites = [
     season: "March–October",
     alerts: [],
     tips: "Shower in the morning — water temp gets inconsistent in afternoons. Lakefront sites book first.",
-    availability: generateAvailability(0.5),
+    availability: generateAvailability(0.5, 1003),
     socialReviews: [
       { source: "Reddit r/WACamping", user: "u/methow_valley_fan", text: "Lakefront sites are everything. We swam every morning right from our campsite. Winthrop is a cute town 15 min away for coffee and supplies.", date: "2025-07" },
       { source: "The Dyrt", user: "FamilyCampers2025", text: "Great for kids — the beach area is shallow and safe. Showers are free but yeah, go in the morning for hot water. Afternoons are lukewarm at best.", date: "2025-08" },
@@ -111,7 +111,7 @@ export const campsites = [
     season: "Year-round (limited winter)",
     alerts: [],
     tips: "Ferry reservations are essential in summer — book the Anacortes→Orcas ferry early.",
-    availability: generateAvailability(0.4),
+    availability: generateAvailability(0.4, 1004),
     socialReviews: [
       { source: "Reddit r/SanJuanIslands", user: "u/island_camper", text: "Mt. Constitution at sunrise is the best view in WA. Period. The drive up is wild but the tower view at the top is 360�� of islands, water, and mountains.", date: "2025-08" },
       { source: "Reddit r/WACamping", user: "u/kayak_king_pnw", text: "Rented kayaks on Cascade Lake right from camp. Water was perfect. Only struggle was getting the ferry reservation — book MONTHS ahead.", date: "2025-07" },
@@ -140,7 +140,7 @@ export const campsites = [
     season: "April–October",
     alerts: [],
     tips: "Eastern WA summer = hot and dry. Bring extra water and sun protection. Way less crowded than west side.",
-    availability: generateAvailability(0.7),
+    availability: generateAvailability(0.7, 1005),
     socialReviews: [
       { source: "Reddit r/Washington", user: "u/eastern_wa_explorer", text: "The most underrated camping in WA. While everyone fights for spots on the coast, we had our pick of lakefront sites in July. 95°F and the lake was perfect.", date: "2025-07" },
       { source: "The Dyrt", user: "GeologyNerd42", text: "Dry Falls viewpoint blew my mind. 3.5 miles wide, 400ft tall — once 10x bigger than Niagara. Free hot showers too. My new favorite state park.", date: "2025-06" },
@@ -169,7 +169,7 @@ export const campsites = [
     season: "May–September",
     alerts: ["Standard campground partially closed for cleanup in 2026 — utility sites 1-45 open"],
     tips: "Reservations open May 15, 2026 — book immediately for summer dates.",
-    availability: generateAvailability(0.55),
+    availability: generateAvailability(0.55, 1006),
     socialReviews: [
       { source: "Reddit r/SeattleWA", user: "u/weekend_warrior_206", text: "Our go-to for quick weekend trips. Just over an hour from Seattle, set up camp, swim in the lake. Nothing fancy but it works perfectly.", date: "2025-08" },
       { source: "Reddit r/WACamping", user: "u/i90_camper", text: "Utility sites 1-45 are open FCFS even when the main campground is closed. Got there Friday at noon and still had plenty of choices.", date: "2026-04" },
@@ -198,7 +198,7 @@ export const campsites = [
     season: "Year-round",
     alerts: [],
     tips: "Bring quarters for the showers. Beach sites are the premium spots — book early.",
-    availability: generateAvailability(0.5),
+    availability: generateAvailability(0.5, 1007),
     socialReviews: [
       { source: "Reddit r/OlympicNationalPark", user: "u/port_angeles_local", text: "Best beach camping near Olympic NP. The views of the Strait with the mountains behind are incredible at sunset. Bring quarters for showers though.", date: "2025-07" },
       { source: "The Dyrt", user: "RVlife_PNW", text: "Full hookups, laundry, and beach access? For RV camping near Olympic, this can't be beat. Sites are tight but the location makes up for it.", date: "2025-08" },
@@ -227,7 +227,7 @@ export const campsites = [
     season: "May–October",
     alerts: [],
     tips: "South campground has lake access; North is quieter with river access. Leavenworth is 20 min away for food/shopping.",
-    availability: generateAvailability(0.45),
+    availability: generateAvailability(0.45, 1008),
     socialReviews: [
       { source: "Reddit r/Leavenworth", user: "u/cascade_explorer", text: "South campground lake access is amazing — glacier-fed water so it's cold but on a hot day it's perfect. Leavenworth 20 min away for the best bratwurst of your life.", date: "2025-07" },
       { source: "Instagram", user: "@pnw.camplife", text: "The mountain backdrop from the lake is straight out of a postcard. We did horseback riding through the park trails and it was the highlight of our summer.", date: "2025-08" },
@@ -256,7 +256,7 @@ export const campsites = [
     season: "Year-round",
     alerts: [],
     tips: "Bring layers — the coast is cooler and windier than inland. Great for kite flying.",
-    availability: generateAvailability(0.65),
+    availability: generateAvailability(0.65, 1009),
     socialReviews: [
       { source: "Reddit r/WACamping", user: "u/beach_camper_wa", text: "This park is our go-to for coast camping. Not glamorous but 250 sites means you can almost always get in. The beach is massive and mostly empty.", date: "2025-06" },
       { source: "The Dyrt", user: "KiteFlyer_WA", text: "The wind here is insane in the best way. Perfect for kite flying. Razor clamming in season is super fun if you have a license.", date: "2025-10" },
@@ -285,7 +285,7 @@ export const campsites = [
     season: "Year-round",
     alerts: [],
     tips: "The wood-fired sauna is the real draw here. Stargazer tents are a unique glamping experience.",
-    availability: generateAvailability(0.35),
+    availability: generateAvailability(0.35, 1010),
     socialReviews: [
       { source: "Reddit r/glamping", user: "u/stargazer_nw", text: "The stargazer tents are next level. Fall asleep watching stars through the clear roof. The wood-fired sauna after a hike in the gorge is perfection.", date: "2025-09" },
       { source: "Instagram", user: "@pnw.hidden.gems", text: "This place is a vibe. Café serves amazing local coffee, the creek is crystal clear, and the sauna is one of the best we've experienced anywhere. Not cheap but worth every penny.", date: "2025-08" },
@@ -314,7 +314,7 @@ export const campsites = [
     season: "Late May–Late September",
     alerts: ["No showers at any Mt. Rainier NP campground"],
     tips: "Reserve exactly 6 months ahead on the 15th at 10am ET. The Grove of the Patriarchs trail starts from here.",
-    availability: generateAvailability(0.25),
+    availability: generateAvailability(0.25, 1011),
     socialReviews: [
       { source: "Reddit r/MountRainier", user: "u/rainier_regular", text: "Best campground in the park hands down. The old growth trees are massive. River is gorgeous but freezing. No showers — hit up Packwood on the way out.", date: "2025-08" },
       { source: "The Dyrt", user: "NWHiker2024", text: "Got our spot by setting an alarm for 7am PT on release day. Sites along the river (B loop) are the best. Bring layers, it's cool even in August.", date: "2025-07" },
@@ -343,7 +343,7 @@ export const campsites = [
     season: "Year-round (some loops seasonal)",
     alerts: ["No showers — nearest at Kalaloch Lodge or Bogachiel SP (23 mi)"],
     tips: "Sites on the bluff edge have direct ocean views — worth requesting specifically. Tree of Life beach is a short walk.",
-    availability: generateAvailability(0.3),
+    availability: generateAvailability(0.3, 1012),
     socialReviews: [
       { source: "Reddit r/OlympicNationalPark", user: "u/coastal_camper_pnw", text: "Falling asleep to the sound of the ocean crashing below the bluff is something else. No showers but honestly who cares when you have this view.", date: "2025-07" },
       { source: "Instagram", user: "@pnw.adventure.co", text: "Kalaloch is bucket list camping. Sunset from the bluff sites is the most beautiful thing I've seen in WA. Go see the Tree of Life while you're there.", date: "2025-08" },
@@ -372,7 +372,7 @@ export const campsites = [
     season: "Mid-May–Mid-October",
     alerts: ["No showers — vault and flush toilets only"],
     tips: "Diablo Lake's turquoise color comes from glacial flour. The Diablo Lake overlook on Hwy 20 is an iconic photo spot.",
-    availability: generateAvailability(0.35),
+    availability: generateAvailability(0.35, 1013),
     socialReviews: [
       { source: "Reddit r/WACamping", user: "u/north_cascades_addict", text: "The color of Diablo Lake is not photoshopped — it really is that turquoise. Best campground in North Cascades for lakeside access. No showers but the lake is your shower.", date: "2025-08" },
       { source: "The Dyrt", user: "PNWExplorer", text: "Incredibly underrated. $22/night for lakefront camping with those views? The lack of showers is the only reason it's not completely sold out.", date: "2025-07" },
@@ -401,15 +401,207 @@ export const campsites = [
     season: "Late March–Late October",
     alerts: ["Hot springs pool requires separate day-use fee (~$15)"],
     tips: "The hot springs are the ultimate shower alternative. Sol Duc Falls is a must-do 1.6mi roundtrip hike from camp.",
-    availability: generateAvailability(0.3),
+    availability: generateAvailability(0.3, 1014),
     socialReviews: [
       { source: "Reddit r/OlympicNationalPark", user: "u/hot_springs_hiker", text: "After a long day hiking, soaking in the hot springs is absolute heaven. The campground itself is nothing fancy but the location can't be beat.", date: "2025-07" },
       { source: "Reddit r/WACamping", user: "u/sol_duc_lover", text: "Pro tip: hike to Sol Duc Falls first thing in the morning when no one's there. The light through the forest is magical. Then hit the hot springs after.", date: "2025-08" },
     ]
+  },
+
+  // --- Oregon ---
+
+  {
+    id: "fort-stevens",
+    name: "Fort Stevens State Park",
+    region: "Oregon Coast",
+    location: "Astoria, OR",
+    lat: 46.1867,
+    lng: -123.9653,
+    platform: "OR State Parks",
+    bookingUrl: "https://oregonstateparks.reserveamerica.com",
+    image: "https://photos.thedyrt.com/photo/58992/photo/oregon-fort-stevens-state-park_82e78a8ef938aa60b3f65e6a4cb0a33e.jpg",
+    pricePerNight: 33,
+    reservationFee: 8,
+    rating: 4.5,
+    reviews: 214,
+    sites: 476,
+    siteTypes: ["tent", "RV", "cabin"],
+    showers: { type: "free", cost: "Free hot water", hours: "all day", seasonal: "Year-round" },
+    amenities: ["free hot showers", "flush toilets", "fire pit", "bike trails", "beach access", "historic military fort"],
+    highlights: "Oregon's largest state park campground. Wreck of the Peter Iredale on the beach, miles of bike trails, and a Civil War-era fort to explore.",
+    driveFromSeattle: "4 hr",
+    driveFromPortland: "1.75 hr",
+    season: "Year-round",
+    alerts: [],
+    tips: "The Peter Iredale shipwreck is best photographed at sunset during low tide. Bike trails connect the entire park.",
+    availability: generateAvailability(0.6, 2001),
+    socialReviews: [
+      { source: "Reddit r/OregonCoast", user: "u/astoria_camper", text: "476 sites and it STILL sells out on summer weekends. The bike trails are incredible — you can ride from camp to the beach to the fort without touching a road.", date: "2025-07" },
+      { source: "The Dyrt", user: "PNWCampFamily", text: "Our kids loved exploring the old fort bunkers. The Peter Iredale wreck is surreal at sunset. Free hot showers are a huge bonus. Book 9 months ahead for July.", date: "2025-08" },
+    ]
+  },
+  {
+    id: "cape-lookout",
+    name: "Cape Lookout State Park",
+    region: "Oregon Coast",
+    location: "Tillamook, OR",
+    lat: 45.3534,
+    lng: -123.9718,
+    platform: "OR State Parks",
+    bookingUrl: "https://oregonstateparks.reserveamerica.com",
+    image: "https://photos.thedyrt.com/photo/12917/photo/oregon-cape-lookout-state-park_46a05ee4183ca11aec1d7bb6e012d29c.jpg",
+    pricePerNight: 33,
+    reservationFee: 8,
+    rating: 4.6,
+    reviews: 187,
+    sites: 173,
+    siteTypes: ["tent", "RV", "cabin"],
+    showers: { type: "free", cost: "Free hot water", hours: "all day", seasonal: "Year-round" },
+    amenities: ["free hot showers", "flush toilets", "fire pit", "beach access", "whale watching", "cape trail"],
+    highlights: "Camp in old-growth forest steps from the beach. The 2.5-mile Cape Trail has some of the best whale watching on the coast.",
+    driveFromSeattle: "4.5 hr",
+    driveFromPortland: "2 hr",
+    season: "Year-round",
+    alerts: [],
+    tips: "The Cape Trail is spectacular but exposed — go on a clear day for views to Cape Meares and Cape Kiwanda. Tillamook Creamery is 15 min away.",
+    availability: generateAvailability(0.45, 2002),
+    socialReviews: [
+      { source: "Reddit r/OregonCoast", user: "u/cape_hiker_or", text: "The Cape Trail might be the best coastal hike in Oregon. On a clear day you can see forever. We saw gray whales from the viewpoint in March.", date: "2025-03" },
+      { source: "Reddit r/camping", user: "u/tillamook_cheese_fan", text: "Camp here, then drive 15 min to the Tillamook Creamery for ice cream. The campground is in these gorgeous old-growth Sitka spruces right by the beach.", date: "2025-07" },
+    ]
+  },
+  {
+    id: "beverly-beach",
+    name: "Beverly Beach State Park",
+    region: "Oregon Coast",
+    location: "Newport, OR",
+    lat: 44.7283,
+    lng: -124.0597,
+    platform: "OR State Parks",
+    bookingUrl: "https://oregonstateparks.reserveamerica.com",
+    image: "https://photos.thedyrt.com/photo/12849/photo/oregon-beverly-beach-state-park_fb81c287f29e3e3ac9df457c1c48e3e7.jpg",
+    pricePerNight: 33,
+    reservationFee: 8,
+    rating: 4.4,
+    reviews: 156,
+    sites: 253,
+    siteTypes: ["tent", "RV"],
+    showers: { type: "free", cost: "Free hot water", hours: "all day", seasonal: "Year-round" },
+    amenities: ["free hot showers", "flush toilets", "fire pit", "beach access", "creek", "near aquarium"],
+    highlights: "Large campground in a forested creek canyon, with beach access through a tunnel under the highway. Oregon Coast Aquarium and Nye Beach are minutes away.",
+    driveFromSeattle: "5 hr",
+    driveFromPortland: "2.5 hr",
+    season: "Year-round",
+    alerts: [],
+    tips: "Walk through the tunnel under 101 for a dramatic beach reveal. Newport's Bayfront has great chowder and sea lion viewing.",
+    availability: generateAvailability(0.55, 2003),
+    socialReviews: [
+      { source: "Reddit r/OregonCoast", user: "u/newport_explorer", text: "The walk through the tunnel to the beach is like entering another world — you go from quiet forest to wide open ocean. Newport is the best town on the coast for food.", date: "2025-08" },
+      { source: "The Dyrt", user: "CoastalCamper_OR", text: "253 sites so you can usually find availability. The creek running through camp is nice background noise. Free showers, beach access, and the aquarium 10 min away.", date: "2025-07" },
+    ]
+  },
+  {
+    id: "tumalo",
+    name: "Tumalo State Park",
+    region: "Central Oregon",
+    location: "Bend, OR",
+    lat: 44.1283,
+    lng: -121.3332,
+    platform: "OR State Parks",
+    bookingUrl: "https://oregonstateparks.reserveamerica.com",
+    image: "https://photos.thedyrt.com/photo/13097/photo/oregon-tumalo-state-park_21fc97e7dfb37bd18a99eed3c0d4dc55.jpg",
+    pricePerNight: 33,
+    reservationFee: 8,
+    rating: 4.5,
+    reviews: 98,
+    sites: 68,
+    siteTypes: ["tent", "RV"],
+    showers: { type: "free", cost: "Free hot water", hours: "all day", seasonal: "May–October" },
+    amenities: ["free hot showers", "flush toilets", "fire pit", "Deschutes River", "swimming", "tubing"],
+    highlights: "Best base camp for Bend. On the Deschutes River with swimming and tubing, 5 minutes from Bend's breweries and mountain biking trails.",
+    driveFromSeattle: "5 hr",
+    driveFromPortland: "3 hr",
+    season: "Year-round (limited winter)",
+    alerts: [],
+    tips: "Float the Deschutes from camp in the afternoon, then bike or drive into Bend for dinner and craft beer. 30+ breweries within 10 minutes.",
+    availability: generateAvailability(0.4, 2004),
+    socialReviews: [
+      { source: "Reddit r/Bend", user: "u/bend_mtb_life", text: "Tumalo is the perfect base camp for Bend. We'd mountain bike Phil's Trail in the morning, float the Deschutes in the afternoon, and hit breweries at night. Best camping loop.", date: "2025-07" },
+      { source: "The Dyrt", user: "HighDesertCamper", text: "Only 68 sites so book early. The Deschutes River access is amazing — we tubed right from the campground. Bend is literally 5 min away for anything you need.", date: "2025-08" },
+    ]
+  },
+  {
+    id: "harris-beach",
+    name: "Harris Beach State Park",
+    region: "Oregon Coast",
+    location: "Brookings, OR",
+    lat: 42.0856,
+    lng: -124.3134,
+    platform: "OR State Parks",
+    bookingUrl: "https://oregonstateparks.reserveamerica.com",
+    image: "https://photos.thedyrt.com/photo/12945/photo/oregon-harris-beach-state-park_67a1a4a93c80bb08a27c5c29e24a8cba.jpg",
+    pricePerNight: 33,
+    reservationFee: 8,
+    rating: 4.7,
+    reviews: 132,
+    sites: 149,
+    siteTypes: ["tent", "RV"],
+    showers: { type: "free", cost: "Free hot water", hours: "all day", seasonal: "Year-round" },
+    amenities: ["free hot showers", "flush toilets", "fire pit", "beach access", "sea stacks", "tide pools"],
+    highlights: "Southern Oregon's gem. Dramatic sea stacks, the best weather on the coast (banana belt), and stunning sunsets. Bird Island National Wildlife Refuge just offshore.",
+    driveFromSeattle: "7.5 hr",
+    driveFromPortland: "5.5 hr",
+    season: "Year-round",
+    alerts: [],
+    tips: "Brookings is in the 'banana belt' — warmest and sunniest spot on the Oregon coast. Great base for exploring the Samuel Boardman Scenic Corridor.",
+    availability: generateAvailability(0.5, 2005),
+    socialReviews: [
+      { source: "Reddit r/OregonCoast", user: "u/south_coast_lover", text: "Samuel Boardman Scenic Corridor just north of here is the most beautiful stretch of coastline I've ever seen. Harris Beach itself has incredible sea stacks and tide pools.", date: "2025-07" },
+      { source: "Reddit r/camping", user: "u/pnw_road_tripper", text: "It's a long drive from Portland but SO worth it. Brookings has the best weather on the coast — we had 75°F and sun while Newport was 55°F and fog.", date: "2025-08" },
+    ]
+  },
+  {
+    id: "crater-lake-mazama",
+    name: "Mazama Campground",
+    region: "Southern Oregon",
+    location: "Crater Lake NP, OR",
+    lat: 42.8603,
+    lng: -122.1366,
+    platform: "Recreation.gov",
+    bookingUrl: "https://www.recreation.gov/camping/campgrounds/232466",
+    image: "https://photos.thedyrt.com/photo/13014/photo/oregon-mazama-campground_7d7e12d28f3c9eb8b69a4e3c3e7aec7c.jpg",
+    pricePerNight: 23,
+    reservationFee: 6,
+    rating: 4.3,
+    reviews: 89,
+    sites: 214,
+    siteTypes: ["tent", "RV"],
+    showers: { type: "none", cost: "No showers", hours: "N/A", seasonal: "N/A" },
+    amenities: ["flush toilets", "potable water", "fire pit", "amphitheater", "Crater Lake access"],
+    highlights: "The only campground in Crater Lake National Park. Wake up and drive 7 miles to the deepest, bluest lake in America.",
+    driveFromSeattle: "7 hr",
+    driveFromPortland: "4.5 hr",
+    season: "Late June–Late September (snow dependent)",
+    alerts: ["No showers at any Crater Lake NP campground", "Opens late June depending on snowpack"],
+    tips: "Arrive early — the rim drive is best in morning light. Cleetwood Cove Trail is the only way to the water (1.1mi, steep). Book early for July–August.",
+    availability: generateAvailability(0.3, 2006),
+    socialReviews: [
+      { source: "Reddit r/NationalPark", user: "u/crater_lake_fanatic", text: "Nothing prepares you for the color of that lake. Every single photo you've seen is accurate — it's really that blue. The campground itself is basic but who cares.", date: "2025-08" },
+      { source: "The Dyrt", user: "VolcanoHiker_PNW", text: "No showers but the lake views make up for everything. Do the Cleetwood Cove hike to swim in the lake — it's 50°F but you'll never forget it. Opens late June most years.", date: "2025-07" },
+    ]
   }
 ];
 
-function generateAvailability(fillRate) {
+function seededRandom(seed) {
+  let s = seed;
+  return () => {
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    return (s >>> 0) / 0xffffffff;
+  };
+}
+
+function generateAvailability(fillRate, seed) {
+  const rand = seededRandom(seed);
   const avail = {};
   const start = new Date("2026-06-01");
   const end = new Date("2026-09-30");
@@ -421,7 +613,7 @@ function generateAvailability(fillRate) {
     const isHoliday = (d.getMonth() === 6 && d.getDate() >= 3 && d.getDate() <= 5) ||
                       (d.getMonth() === 8 && d.getDate() >= 4 && d.getDate() <= 6);
     const chance = isHoliday ? fillRate * 0.15 : baseChance;
-    const available = Math.floor(Math.random() * 20 * chance);
+    const available = Math.floor(rand() * 20 * chance);
     avail[key] = { available, total: 20 };
   }
   return avail;

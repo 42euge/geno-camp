@@ -36,7 +36,7 @@ Region profiles live in `regions/{state}.md` alongside this skill. They contain:
 
 **When searching a specific state, always load its region profile first** (if one exists). This avoids dead-end searches and provides verified, pre-researched recommendations that can be presented immediately while web searches run for availability.
 
-Currently available: `regions/washington.md`
+Currently available: `regions/washington.md`, `regions/oregon.md`
 
 ## Workflow
 
@@ -164,7 +164,27 @@ Once the user picks a site, provide the platform-specific booking guide:
 
 **Cancellation:** Refund minus service fee if cancelled 48+ hours before arrival.
 
-#### 6b. Recreation.gov (Federal)
+#### 6b. Oregon State Parks (ReserveAmerica)
+
+**URL:** `https://oregonstateparks.reserveamerica.com`
+
+**Steps:**
+1. Go to oregonstateparks.reserveamerica.com
+2. Search by park name or browse by region
+3. Select park → view available dates
+4. Pick a specific site (map view recommended)
+5. Fill in group size and equipment details
+6. Create account or sign in → pay with credit card ($8 reservation fee)
+
+**Gotchas:**
+- 9-month advance booking window
+- Coastal parks (Cape Lookout, Fort Stevens) sell out fast for July/August weekends
+- No day-use pass required at most Oregon state parks
+- Cabins and yurts have minimum 2-night stays in summer
+
+**Cancellation:** Refund minus $8 fee if cancelled 2+ days before arrival.
+
+#### 6c. Recreation.gov (Federal)
 
 **Steps:**
 1. Go to recreation.gov → search campground name

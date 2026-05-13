@@ -1,27 +1,36 @@
 const cart = [];
+const compareSet = new Set();
+const favorites = new Set(JSON.parse(localStorage.getItem("geno-camp-favs") || "[]"));
 let activePlatforms = new Set();
 let allPlatforms = [];
 let mapInstance = null;
 let mapMarkers = [];
 let mapVisible = false;
+let showFavsOnly = false;
 let allSites = [];
 
 async function init() {
+  initTheme();
   await loadRegions();
   await loadPlatforms();
   await loadCampsites();
 }
 
 async function loadRegions() {
-  const res = await fetch("/api/regions");
+  const stateVal = document.getElementById("stateFilter")?.value || "all";
+  const params = stateVal !== "all" ? `?state=${stateVal}` : "";
+  const res = await fetch(`/api/regions${params}`);
   const regions = await res.json();
   const select = document.getElementById("regionFilter");
+  const currentVal = select.value;
+  select.innerHTML = '<option value="all">All Regions</option>';
   regions.forEach((r) => {
     const opt = document.createElement("option");
     opt.value = r;
     opt.textContent = r;
     select.appendChild(opt);
   });
+  if (regions.includes(currentVal)) select.value = currentVal;
 }
 
 async function loadPlatforms() {
@@ -57,35 +66,77 @@ function togglePlatform(platform) {
   loadCampsites();
 }
 
+function onStateChange() {
+  loadRegions();
+  loadCampsites();
+}
+
 async function loadCampsites() {
+  const minPrice = document.getElementById("minPrice").value;
+  const maxPrice = document.getElementById("maxPrice").value;
+  const stateVal = document.getElementById("stateFilter").value;
   const params = new URLSearchParams({
     region: document.getElementById("regionFilter").value,
     showerType: document.getElementById("showerFilter").value,
     siteType: document.getElementById("siteFilter").value,
     sort: document.getElementById("sortFilter").value,
     platforms: [...activePlatforms].join(","),
+    q: document.getElementById("searchInput").value.trim(),
   });
+  if (stateVal !== "all") params.set("state", stateVal);
+  if (minPrice) params.set("minPrice", minPrice);
+  if (maxPrice) params.set("maxPrice", maxPrice);
 
   const res = await fetch(`/api/campsites?${params}`);
   allSites = await res.json();
-  renderGrid(allSites);
-  if (mapVisible) updateMap(allSites);
+
+  let displaySites = allSites;
+  if (showFavsOnly) {
+    displaySites = allSites.filter((s) => favorites.has(s.id));
+  }
+
+  renderGrid(displaySites);
+  updateResultCount(displaySites.length, allSites.length);
+  if (mapVisible) updateMap(displaySites);
+}
+
+function updateResultCount(shown, total) {
+  const el = document.getElementById("resultCount");
+  if (shown === total) {
+    el.textContent = `${total} campsite${total !== 1 ? "s" : ""}`;
+  } else {
+    el.textContent = `${shown} of ${total} campsites`;
+  }
 }
 
 function renderGrid(sites) {
   const grid = document.getElementById("campsiteGrid");
   if (sites.length === 0) {
-    grid.innerHTML = '<div class="empty-state"><p>No campsites match your filters.<br>Try toggling some platforms back on.</p></div>';
+    const search = document.getElementById("searchInput").value.trim();
+    const msg = search
+      ? `No campsites match "${search}".<br>Try a different search or adjust your filters.`
+      : showFavsOnly
+        ? `No favorites yet.<br>Browse campsites and click the ♡ to save your favorites.`
+        : `No campsites match your filters.<br>Try widening your price range or toggling platforms back on.`;
+    grid.innerHTML = `<div class="empty-state"><p>${msg}</p></div>`;
     return;
   }
   grid.innerHTML = sites.map((site) => `
     <div class="campsite-card" onclick="openDetail('${site.id}')">
+      <div class="card-compare">
+        <button class="compare-check ${compareSet.has(site.id) ? "checked" : ""}"
+                onclick="event.stopPropagation(); toggleCompare('${site.id}')"
+                title="Add to compare">${compareSet.has(site.id) ? "✓" : "⇔"}</button>
+      </div>
+      <button class="fav-btn ${favorites.has(site.id) ? "favorited" : ""}"
+              onclick="event.stopPropagation(); toggleFavorite('${site.id}')"
+              title="${favorites.has(site.id) ? "Remove from favorites" : "Add to favorites"}">${favorites.has(site.id) ? "♥" : "♡"}</button>
       <img class="card-image" src="${site.image}" alt="${site.name}" loading="lazy"
            onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22><rect fill=%22%232d5a3d%22 width=%22400%22 height=%22200%22/><text x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2218%22>🏕️ ${encodeURIComponent(site.name)}</text></svg>'">
       <div class="card-body">
         <div class="card-region">${site.region}</div>
         <div class="card-name">${site.name}</div>
-        <div class="card-location">${site.location} · ${site.driveFromSeattle} from Seattle</div>
+        <div class="card-location">${site.location} · ${getDriveTime(site)}${site.distanceMi ? ` · ${site.distanceMi} mi` : ""}</div>
         <div class="card-meta">
           <span class="meta-badge badge-rating">★ ${site.rating} (${site.reviews})</span>
           <span class="meta-badge badge-price">$${site.pricePerNight}/night</span>
@@ -103,6 +154,13 @@ function renderGrid(sites) {
       </div>
     </div>
   `).join("");
+}
+
+function getDriveTime(site) {
+  if (site.driveFromPortland && site.location.endsWith(", OR")) {
+    return `${site.driveFromPortland} from Portland`;
+  }
+  return `${site.driveFromSeattle} from Seattle`;
 }
 
 function showerLabel(type) {
@@ -246,7 +304,7 @@ async function openDetail(id) {
          onerror="this.style.background='#2d5a3d';this.style.height='120px'">
     <div class="modal-body">
       <div class="modal-name">${site.name}</div>
-      <div class="modal-location">${site.location} · ${site.region} · ${site.driveFromSeattle} from Seattle</div>
+      <div class="modal-location">${site.location} · ${site.region} · ${getDriveTime(site)}${site.driveFromPortland && site.location.endsWith(", OR") ? ` · ${site.driveFromSeattle} from Seattle` : ""}</div>
 
       <div class="card-meta" style="margin: 16px 0">
         <span class="meta-badge badge-rating">★ ${site.rating} (${site.reviews} reviews)</span>
@@ -309,6 +367,11 @@ async function openDetail(id) {
 
       ${site.alerts.length ? `<div class="modal-section"><h3>⚠️ Alerts</h3>${site.alerts.map((a) => `<div class="alert-tag" style="display:block; margin-bottom:4px">${a}</div>`).join("")}</div>` : ""}
 
+      <div class="modal-section" id="nearbySection-${site.id}">
+        <h3>📍 Nearby Campsites</h3>
+        <div class="nearby-loading">Loading nearby...</div>
+      </div>
+
       <button class="modal-add-btn" onclick="addToCart('${site.id}'); closeModal();">
         ${isInCart(site.id) ? "✓ Already in Cart" : "Add to Trip"}
       </button>
@@ -317,6 +380,30 @@ async function openDetail(id) {
 
   document.getElementById("modalOverlay").classList.add("open");
   document.getElementById("detailModal").classList.add("open");
+
+  loadNearbySites(site.id);
+}
+
+async function loadNearbySites(siteId) {
+  const section = document.getElementById(`nearbySection-${siteId}`);
+  if (!section) return;
+  const res = await fetch(`/api/campsites/${siteId}/nearby`);
+  const nearby = await res.json();
+  section.innerHTML = `
+    <h3>📍 Nearby Campsites</h3>
+    <div class="nearby-grid">
+      ${nearby.map((n) => `
+        <div class="nearby-card" onclick="closeModal(); setTimeout(() => openDetail('${n.id}'), 200)">
+          <img src="${n.image}" alt="${n.name}" loading="lazy"
+               onerror="this.style.display='none'">
+          <div class="nearby-info">
+            <div class="nearby-name">${n.name}</div>
+            <div class="nearby-meta">${n.distance} mi away · ★ ${n.rating} · $${n.pricePerNight}/night</div>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
 }
 
 function closeModal() {
@@ -459,5 +546,153 @@ function closeCheckout() {
 function formatDate(dateStr) {
   return new Date(dateStr + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
+
+// --- Compare ---
+
+function toggleCompare(id) {
+  if (compareSet.has(id)) {
+    compareSet.delete(id);
+  } else if (compareSet.size < 4) {
+    compareSet.add(id);
+  }
+  updateCompareUI();
+  renderGrid(allSites);
+}
+
+function updateCompareUI() {
+  const btn = document.getElementById("compareBtn");
+  const count = document.getElementById("compareCount");
+  count.textContent = compareSet.size;
+  btn.style.display = compareSet.size >= 2 ? "block" : "none";
+}
+
+async function openCompare() {
+  if (compareSet.size < 2) return;
+  const sites = await Promise.all(
+    [...compareSet].map(async (id) => {
+      const res = await fetch(`/api/campsites/${id}`);
+      return res.json();
+    })
+  );
+
+  const bestRating = Math.max(...sites.map((s) => s.rating));
+  const bestPrice = Math.min(...sites.map((s) => s.pricePerNight));
+  const bestReviews = Math.max(...sites.map((s) => s.reviews));
+
+  const rows = [
+    { label: "Region", get: (s) => s.region },
+    { label: "Location", get: (s) => s.location },
+    { label: "Price/night", get: (s) => `$${s.pricePerNight}`, best: (s) => s.pricePerNight === bestPrice },
+    { label: "Rating", get: (s) => `★ ${s.rating}`, best: (s) => s.rating === bestRating },
+    { label: "Reviews", get: (s) => s.reviews.toLocaleString(), best: (s) => s.reviews === bestReviews },
+    { label: "Showers", get: (s) => `${showerLabel(s.showers.type)} — ${s.showers.cost}` },
+    { label: "Sites", get: (s) => s.sites },
+    { label: "Platform", get: (s) => `${getPlatformIcon(s.platform)} ${s.platform}` },
+    { label: "Drive from Seattle", get: (s) => s.driveFromSeattle },
+    { label: "Season", get: (s) => s.season },
+    { label: "Vibe", get: (s) => s.highlights },
+  ];
+
+  document.getElementById("compareContent").innerHTML = `
+    <div class="compare-header-row">
+      <h2>Side-by-Side Comparison</h2>
+      <p>${sites.length} campsites selected</p>
+    </div>
+    <div class="compare-table-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th></th>
+            ${sites.map((s) => `<th class="compare-name">${s.name}</th>`).join("")}
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map((row) => `
+            <tr>
+              <td><strong>${row.label}</strong></td>
+              ${sites.map((s) => `<td class="${row.best && row.best(s) ? "compare-winner" : ""}">${row.get(s)}</td>`).join("")}
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  document.getElementById("compareOverlay").classList.add("open");
+  document.getElementById("compareModal").classList.add("open");
+}
+
+function closeCompare() {
+  document.getElementById("compareOverlay").classList.remove("open");
+  document.getElementById("compareModal").classList.remove("open");
+}
+
+// --- Favorites ---
+
+function toggleFavorite(id) {
+  if (favorites.has(id)) {
+    favorites.delete(id);
+  } else {
+    favorites.add(id);
+  }
+  localStorage.setItem("geno-camp-favs", JSON.stringify([...favorites]));
+  loadCampsites();
+}
+
+function toggleFavoritesFilter() {
+  showFavsOnly = !showFavsOnly;
+  const btn = document.getElementById("favToggle");
+  const icon = document.getElementById("favIcon");
+  const label = document.getElementById("favLabel");
+  if (showFavsOnly) {
+    btn.classList.add("fav-active");
+    icon.textContent = "♥";
+    label.textContent = `Favorites (${favorites.size})`;
+  } else {
+    btn.classList.remove("fav-active");
+    icon.textContent = "♡";
+    label.textContent = "Favorites";
+  }
+  loadCampsites();
+}
+
+// --- Theme ---
+
+function initTheme() {
+  const saved = localStorage.getItem("geno-camp-theme");
+  if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+    document.documentElement.setAttribute("data-theme", "dark");
+    document.getElementById("themeIcon").textContent = "☀️";
+  }
+}
+
+function toggleTheme() {
+  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+  if (isDark) {
+    document.documentElement.removeAttribute("data-theme");
+    document.getElementById("themeIcon").textContent = "🌙";
+    localStorage.setItem("geno-camp-theme", "light");
+  } else {
+    document.documentElement.setAttribute("data-theme", "dark");
+    document.getElementById("themeIcon").textContent = "☀️";
+    localStorage.setItem("geno-camp-theme", "dark");
+  }
+}
+
+// --- Keyboard shortcuts ---
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "/" && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== "INPUT") {
+    e.preventDefault();
+    document.getElementById("searchInput").focus();
+  }
+  if (e.key === "Escape") {
+    document.getElementById("searchInput").blur();
+    closeModal();
+    closeCheckout();
+    closeCompare();
+    if (document.getElementById("cartSidebar").classList.contains("open")) toggleCart();
+  }
+});
 
 init();
