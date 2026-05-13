@@ -8,6 +8,17 @@ Campsite discovery and booking assistant for Claude Code.
 skills/geno-camp/SKILL.md              — main skill: search, compare, book campsites
 skills/geno-camp/regions/washington.md  — WA region profile: parks, showers, booking details
 skills/geno-camp/regions/oregon.md     — OR region profile: coast, Bend, Crater Lake, booking details
+skills/geno-camp-watch/SKILL.md        — watch skill: add, list, check, scan, remove watches
+watcher/
+  index.js                             — main orchestrator: runWatches(), runScan(), CLI entry
+  config.js                            — YAML CRUD for ~/.geno/camp-watches/*.yaml
+  scanner.js                           — weekend scanner logic (Fri-Sun openings)
+  notify-bridge.js                     — builds notification messages from watcher results
+  platforms/
+    index.js                           — platform adapter registry
+    recreation-gov.js                  — recreation.gov availability checker (MVP)
+    wa-state-parks.js                  — WA GoingToCamp checker (Phase 2 stub)
+    or-state-parks.js                  — OR ReserveAmerica checker (Phase 2 stub)
 ```
 
 ## Data Paths
